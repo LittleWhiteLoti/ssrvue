@@ -1,0 +1,27 @@
+{
+  "name": "ssrvue",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "preview": "vite preview",
+    "node": "node server.js",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "vite build --outDir dist/client --ssrManifest",
+    "build:server": "vite build --outDir dist/server --ssr src/entry-server.js",
+    "generate": "vite build --ssrManifest --outDir dist/static && npm run build:server && node prerender",
+    "serve": "cross-env NODE_ENV=production node server"
+  },
+  "dependencies": {
+    "express": "^4.17.3",
+    "vue": "^3.2.25",
+    "vue-router": "^4.0.14"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^2.3.0",
+    "compression": "^1.7.4",
+    "cross-env": "^7.0.3",
+    "serve-static": "^1.15.0",
+    "vite": "^2.9.0"
+  }
+}
