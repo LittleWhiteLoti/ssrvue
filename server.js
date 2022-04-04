@@ -28,7 +28,7 @@ async function createServer(
     if (!isProd) {
       vite = await require('vite').createServer({
         root,
-        logLevel: isTest ? 'error' : 'info',
+        logLevel: !isProd ? 'error' : 'info',
         server: {
           middlewareMode: 'ssr',
           watch: {
@@ -66,10 +66,10 @@ async function createServer(
         }
   
         const [appHtml, preloadLinks] = await render(url, manifest)
-  
+
         const html = template
           .replace(`<!--preload-links-->`, preloadLinks)
-          .replace(`<!--app-html-->`, appHtml)
+          .replace(`<!--ssr-outlet-->`, appHtml)
   
         res.status(200).set({ 'Content-Type': 'text/html' }).end(html)
       } catch (e) {
@@ -78,15 +78,18 @@ async function createServer(
         res.status(500).end(e.stack)
       }
     })
-  
+
     return { app, vite }
 }
 
-createServer()
-    .then(({ app }) =>
-    {
-        app.listen(3000, () => 
-        {
-            console.log('http://localhost:3000')    
-        })
-    })
+if (process.env.NODE_ENV === 'production') 
+{
+  createServer()
+      .then(({ app }) =>
+      {
+          app.listen(3000, () => 
+          {
+              console.log('http://localhost:3000')    
+          })
+      })
+}
